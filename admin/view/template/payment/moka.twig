@@ -1,0 +1,143 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="float-end">
+				<button type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+					<i class="fa fa-save"></i>
+				</button>
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-light">
+					<i class="fa fa-reply"></i>
+				</a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ol class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li class="breadcrumb-item">
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% for alert in alerts %}
+			<div class="alert alert-{{ alert.type }}">
+				<i class="fa fa-{{ alert.icon }}"></i>&nbsp;{{ alert.text }}
+			</div>
+		{% endfor %}
+		<div class="card">
+			<div class="card-header">{{ heading_title }}</div>
+			<div class="card-body">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<form method="POST" id="form-payment" class="form-horizontal">
+							<ul class="nav nav-tabs">
+								<li class="nav-item">
+									<a href="#tab-setting" data-bs-toggle="tab" class="nav-link active">{{ tab_setting }}</a>
+								</li>							
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="tab-setting">
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label" for="moka-api-environment">{{ entry_api_environment }}</label>
+										<div class="col-sm-10">
+											<select name="payment_moka_api_environment" class="form-control" id="moka-api-environment">
+												<option value="test" {{ payment_moka_api_environment == 'test' ? 'selected' : '' }}>{{ text_sandbox }}</option>
+												<option value="live" {{ payment_moka_api_environment == 'live' ? 'selected' : '' }}>{{ text_live }}</option>
+											</select>
+											{% if error_api_environment %}
+												<div class="text-danger">{{ error_api_environment }}</div>
+											{% endif %}
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label" for="moka-dealer-code">{{ entry_dealer_code }}</label>
+										<div class="col-sm-10">
+											<input type="text" name="payment_moka_dealer_code" class="form-control" value="{{ payment_moka_dealer_code }}" placeholder="{{ entry_dealer_code }}" id="moka-dealer-code"/>
+											{% if error_dealer_code %}
+												<div class="text-danger">{{ error_dealer_code }}</div>
+											{% endif %}
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label" for="moka-username">{{ entry_username }}</label>
+										<div class="col-sm-10">
+											<input type="text" name="payment_moka_username" class="form-control" value="{{ payment_moka_username }}" placeholder="{{ entry_username }}" id="moka-username"/>
+											{% if error_username %}
+												<div class="text-danger">{{ error_username }}</div>
+											{% endif %}
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label" for="moka-password">{{ entry_password }}</label>
+										<div class="col-sm-10">
+											<input type="text" name="payment_moka_password" class="form-control" value="{{ payment_moka_password }}" placeholder="{{ entry_password }}" id="moka-password"/>
+											{% if error_password %}
+												<div class="text-danger">{{ error_password }}</div>
+											{% endif %}
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label">
+											<span data-toggle="tooltip" title="{{ help_order_status }}">{{ entry_order_status }}</span>
+										</label>
+										<div class="col-sm-10">
+											<select name="payment_moka_order_status" class="form-control" id="moka-order-status">
+												{% for order_status in order_statuses %}
+													{% if order_status.order_status_id == payment_moka_order_status %}
+														<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+													{% else %}
+														<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+											{% if error_order_status %}
+												<div class="text-danger">{{ error_order_status }}</div>
+											{% endif %}
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label">
+											<span data-toggle="tooltip" title="{{ help_cancel_order_status }}">{{ entry_cancel_order_status }}</span>
+										</label>
+										<div class="col-sm-10">
+											<select name="payment_moka_cancel_order_status" class="form-control" id="moka-cancel-order-status">
+												{% for order_status in order_statuses %}
+													{% if order_status.order_status_id == payment_moka_cancel_order_status %}
+														<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+													{% else %}
+														<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+											{% if error_cancel_order_status %}
+												<div class="text-danger">{{ error_cancel_order_status }}</div>
+											{% endif %}
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label for="input-status" class="col-sm-2 col-form-label">{{ text_status }}</label>
+										<div class="col-sm-10">
+											<div class="form-check form-switch form-switch-lg">
+												<input type="hidden" name="payment_moka_status" value="0"/>
+												<input type="checkbox" name="payment_moka_status" value="1" id="input-status" class="form-check-input" {% if payment_moka_status %} checked {% endif %}/>
+											</div>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label class="col-sm-2 col-form-label" for="moka-sort-order">{{ text_sort_order }}</label>
+										<div class="col-sm-10">
+											<input type="text" name="payment_moka_sort_order" class="form-control" value="{{ payment_moka_sort_order }}" placeholder="{{ text_sort_order }}" id="moka-sort-order"/>
+										</div>
+									</div>
+								</div>								
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{ footer }}
